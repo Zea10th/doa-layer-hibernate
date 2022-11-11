@@ -1,23 +1,28 @@
 package com.example.daohibernate;
 
 import com.example.daohibernate.entity.Person;
+import com.example.daohibernate.repository.CustomizedPersonsRepository;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.CommandLineRunner;
 import org.springframework.stereotype.Component;
 import org.springframework.transaction.annotation.Transactional;
 
-import javax.persistence.EntityManager;
-import javax.persistence.PersistenceContext;
 import java.util.List;
 import java.util.Random;
 
 @Component
 public class CommandLineApp implements CommandLineRunner {
-    @PersistenceContext
-    EntityManager entityManager;
+
+    private final CustomizedPersonsRepository repository;
+
+    @Autowired
+    public CommandLineApp(CustomizedPersonsRepository repository) {
+        this.repository = repository;
+    }
 
     @Override
     @Transactional
-    public void run(String... args) throws Exception {
+    public void run(String... args) {
         var cities = List.of(
                 "Athens",
                 "Berlin",
@@ -54,14 +59,13 @@ public class CommandLineApp implements CommandLineRunner {
         var random = new Random();
 
         for (int i = 0; i < 100; i++) {
-            entityManager.persist(new Person(
-                            names.get(random.nextInt(names.size())),
-                            surnames.get(random.nextInt(surnames.size())),
-                            random.nextInt(60),
-                            String.format("+79%9d", random.nextInt(999_999_999)),
-                            cities.get(random.nextInt(cities.size()))
-                    )
-            );
+            repository.save(new Person(
+                    names.get(random.nextInt(names.size())),
+                    surnames.get(random.nextInt(surnames.size())),
+                    random.nextInt(60),
+                    String.format("+79%9d", random.nextInt(999_999_999)),
+                    cities.get(random.nextInt(cities.size()))
+            ));
         }
     }
 }

@@ -2,10 +2,11 @@ package com.example.daohibernate.entity;
 
 import javax.persistence.*;
 import java.io.Serializable;
-import java.util.Objects;
 
 @Entity
+@IdClass(PersonID.class)
 public class Person implements Serializable {
+
     @Id
     @Column(nullable = false)
     private String name;
@@ -77,18 +78,5 @@ public class Person implements Serializable {
     public String toString() {
         return String.format("%s %s %d %s %s",
                 name, surname, age, phoneNumber, cityOfLiving);
-    }
-
-    @Override
-    public boolean equals(Object o) {
-        if (this == o) return true;
-        if (o == null || getClass() != o.getClass()) return false;
-        Person person = (Person) o;
-        return age == person.age && name.equals(person.name) && surname.equals(person.surname) && Objects.equals(phoneNumber, person.phoneNumber) && Objects.equals(cityOfLiving, person.cityOfLiving);
-    }
-
-    @Override
-    public int hashCode() {
-        return Objects.hash(name, surname, age, phoneNumber, cityOfLiving);
     }
 }
